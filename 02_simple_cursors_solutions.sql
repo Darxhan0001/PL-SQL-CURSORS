@@ -1,12 +1,9 @@
 ------------------------------------------------------------
--- SECTION 2 | SIMPLE (EXPLICIT) CURSORS - SOLUTIONS
-------------------------------------------------------------
+-- SECTION 2 | SIMPLE (EXPLICIT) CURSORS - SOLUTIONS --
+
+-- Q1. Explicit cursor on BOOK, OPEN/FETCH/CLOSE with simple LOOP + %NOTFOUND --
 
 SET SERVEROUTPUT ON;
-
-------------------------------------------------------------
--- Q1. Explicit cursor on BOOK, OPEN/FETCH/CLOSE with simple LOOP + %NOTFOUND
-------------------------------------------------------------
 DECLARE
     CURSOR c_book IS
         SELECT book_id, title, price FROM book;
@@ -23,26 +20,22 @@ BEGIN
     CLOSE c_book;
 END;
 /
+    
+-- Q2. Same program rewritten as a cursor FOR loop --
 
-------------------------------------------------------------
--- Q2. Same program rewritten as a cursor FOR loop
-------------------------------------------------------------
 DECLARE
     CURSOR c_book IS
         SELECT book_id, title, price FROM book;
 BEGIN
-    -- Oracle performs automatically: implicit OPEN, implicit FETCH each
-    -- iteration, implicit EXIT WHEN c_book%NOTFOUND, and implicit CLOSE
-    -- once the loop finishes.
+
     FOR r IN c_book LOOP
         DBMS_OUTPUT.PUT_LINE(r.book_id || ' - ' || r.title || ' - Rs.' || r.price);
     END LOOP;
 END;
 /
 
-------------------------------------------------------------
--- Q3. Publisher name/city/country using cursor_name%ROWTYPE
-------------------------------------------------------------
+-- Q3. Publisher name/city/country using cursor_name%ROWTYPE --
+
 DECLARE
     CURSOR c_pub IS
         SELECT pub_name, city, country FROM publisher;
@@ -58,9 +51,8 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q4. Books priced > 500, serial number via %ROWCOUNT
-------------------------------------------------------------
+-- Q4. Books priced > 500, serial number via %ROWCOUNT --
+
 DECLARE
     CURSOR c_book IS
         SELECT title, price FROM book WHERE price > 500;
@@ -71,9 +63,8 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q5. Member names formatted "1. RIYA SHAH (MSc IT - Sem 1)"
-------------------------------------------------------------
+-- Q5. Member names formatted "1. RIYA SHAH (MSc IT - Sem 1)" --
+
 DECLARE
     CURSOR c_mem IS
         SELECT member_name, course, semester FROM lib_member;
@@ -87,9 +78,8 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q6. Total stock value (price * stock), row values + grand total
-------------------------------------------------------------
+    -- Q6. Total stock value (price * stock), row values + grand total --
+
 DECLARE
     CURSOR c_book IS
         SELECT title, price, stock FROM book;
@@ -104,10 +94,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Grand Total Stock Value = Rs.' || v_total);
 END;
 /
+    
+-- Q7. %ISOPEN check before opening; verify FALSE after closing --
 
-------------------------------------------------------------
--- Q7. %ISOPEN check before opening; verify FALSE after closing
-------------------------------------------------------------
 DECLARE
     CURSOR c_book IS SELECT book_id FROM book;
 BEGIN
@@ -128,9 +117,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q8. Books not returned (return_date IS NULL)
-------------------------------------------------------------
+    
+-- Q8. Books not returned (return_date IS NULL) --
+
 DECLARE
     CURSOR c_issue IS
         SELECT issue_id, book_id, issue_date
@@ -150,9 +139,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q9. Join of BOOK and PUBLISHER
-------------------------------------------------------------
+
+-- Q9. Join of BOOK and PUBLISHER --
+
 DECLARE
     CURSOR c_join IS
         SELECT b.title, p.pub_name, p.country
@@ -165,9 +154,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q10. Books with stock < 5, tagged REORDER, count afterwards
-------------------------------------------------------------
+
+-- Q10. Books with stock < 5, tagged REORDER, count afterwards --
+
 DECLARE
     CURSOR c_low IS
         SELECT book_id, title, stock FROM book WHERE stock < 5;
@@ -181,9 +170,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q11. Top 5 priciest books, EXIT WHEN cursor%ROWCOUNT = 5
-------------------------------------------------------------
+    
+-- Q11. Top 5 priciest books, EXIT WHEN cursor%ROWCOUNT = 5 --
+
 DECLARE
     CURSOR c_book IS
         SELECT title, price FROM book ORDER BY price DESC;
@@ -200,10 +189,9 @@ BEGIN
     CLOSE c_book;
 END;
 /
+    
+-- Q12. SELECT ... FOR UPDATE / WHERE CURRENT OF: +10 stock for 'Database' --
 
-------------------------------------------------------------
--- Q12. SELECT ... FOR UPDATE / WHERE CURRENT OF: +10 stock for 'Database'
-------------------------------------------------------------
 DECLARE
     CURSOR c_book IS
         SELECT book_id, title, stock
