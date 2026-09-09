@@ -1,12 +1,10 @@
 ------------------------------------------------------------
 -- SECTION 3 | PARAMETERISED CURSORS - SOLUTIONS
-------------------------------------------------------------
+
+
+-- Q1. Parameterised cursor by category, tested with Database / Programming
 
 SET SERVEROUTPUT ON;
-
-------------------------------------------------------------
--- Q1. Parameterised cursor by category, tested with Database / Programming
-------------------------------------------------------------
 ACCEPT p_category PROMPT 'Enter category: ';
 DECLARE
     CURSOR c_book (p_cat VARCHAR2) IS
@@ -17,11 +15,10 @@ BEGIN
     END LOOP;
 END;
 /
--- Run once entering Database, run again entering Programming.
 
-------------------------------------------------------------
--- Q2. Parameterised cursor by publisher name (case-insensitive via UPPER())
-------------------------------------------------------------
+
+-- Q2. Parameterised cursor by publisher name (case-insensitive via UPPER()) --
+
 DECLARE
     CURSOR c_book (p_pub VARCHAR2) IS
         SELECT b.title, b.price
@@ -35,9 +32,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q3. Two-parameter cursor: min/max price, tested with 300 and 700
-------------------------------------------------------------
+
+-- Q3. Two-parameter cursor: min/max price, tested with 300 and 700 --
+
 DECLARE
     CURSOR c_book (p_min NUMBER, p_max NUMBER) IS
         SELECT title, price FROM book WHERE price BETWEEN p_min AND p_max;
@@ -48,9 +45,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q4. Cursor by course and semester, join date formatted DD-MON-YYYY
-------------------------------------------------------------
+    
+-- Q4. Cursor by course and semester, join date formatted DD-MON-YYYY --
+
 DECLARE
     CURSOR c_mem (p_course VARCHAR2, p_sem NUMBER) IS
         SELECT member_name, join_date
@@ -64,9 +61,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q5. Parameterised cursor with a DEFAULT value
-------------------------------------------------------------
+
+-- Q5. Parameterised cursor with a DEFAULT value --
+
 DECLARE
     CURSOR c_book (p_cat VARCHAR2 DEFAULT 'Database') IS
         SELECT title FROM book WHERE category = p_cat;
@@ -83,9 +80,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q6. Cursor by member id, three-table join (book_issue -> book, lib_member)
-------------------------------------------------------------
+
+-- Q6. Cursor by member id, three-table join (book_issue -> book, lib_member) --
+
 DECLARE
     CURSOR c_hist (p_mem NUMBER) IS
         SELECT b.title, bi.issue_date
@@ -101,9 +98,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q7. Two cursors: simple cursor over PUBLISHER + parameterised inner cursor
-------------------------------------------------------------
+
+-- Q7. Two cursors: simple cursor over PUBLISHER + parameterised inner cursor --
+
 DECLARE
     CURSOR c_pub IS SELECT pub_id, pub_name FROM publisher;
     CURSOR c_book (p_pub NUMBER) IS
@@ -118,20 +115,16 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
+
 -- Q8. Cursor by country + BOOLEAN flag (see comment for why %ROWCOUNT
---     cannot be used after a cursor FOR loop has ended)
-------------------------------------------------------------
+ --   cannot be used after a cursor FOR loop has ended) --
+
 DECLARE
     CURSOR c_pub (p_country VARCHAR2) IS
         SELECT pub_name FROM publisher WHERE country = p_country;
     v_found BOOLEAN := FALSE;
 BEGIN
-    -- A cursor FOR loop implicitly CLOSEs the cursor the moment the loop
-    -- finishes. Any cursor attribute reference (%ROWCOUNT, %FOUND, %ISOPEN)
-    -- after that point is a reference to a closed cursor and raises
-    -- ORA-01001: cursor is not open. A BOOLEAN flag set inside the loop
-    -- body avoids the problem entirely.
+  
     FOR r IN c_pub('India') LOOP
         v_found := TRUE;
         DBMS_OUTPUT.PUT_LINE(r.pub_name);
@@ -143,9 +136,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q9. Cursor by month number, books issued in that month of 2026
-------------------------------------------------------------
+    
+-- Q9. Cursor by month number, books issued in that month of 2026 --
+
 DECLARE
     CURSOR c_issue (p_month NUMBER) IS
         SELECT issue_id, book_id, issue_date
@@ -160,9 +153,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q10. Cursor by number of overdue days, fine at Rs.2/day, running total
-------------------------------------------------------------
+    
+-- Q10. Cursor by number of overdue days, fine at Rs.2/day, running total --
+
 DECLARE
     CURSOR c_overdue (p_days NUMBER) IS
         SELECT issue_id, book_id, issue_date
@@ -182,9 +175,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q11. Parameterised FOR UPDATE cursor: +10% price by category
-------------------------------------------------------------
+
+-- Q11. Parameterised FOR UPDATE cursor: +10% price by category --
+
 DECLARE
     CURSOR c_book (p_cat VARCHAR2) IS
         SELECT book_id, title, price
@@ -207,9 +200,9 @@ BEGIN
 END;
 /
 
-------------------------------------------------------------
--- Q12. Parameterised cursor by starting letter, case-insensitive
-------------------------------------------------------------
+
+-- Q12. Parameterised cursor by starting letter, case-insensitive --
+
 ACCEPT p_letter PROMPT 'Enter starting letter: ';
 DECLARE
     CURSOR c_mem (p_letter VARCHAR2) IS
